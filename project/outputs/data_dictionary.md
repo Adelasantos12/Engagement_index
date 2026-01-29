@@ -1,0 +1,11 @@
+Variables:
+- SPAR_total: puntaje RSI (0-100)
+- CHE_GDP: gasto corriente en salud / PIB
+- UHC_index: índice de cobertura de servicios UHC (0-100)
+- Policy_UHC / Plan_UHC / Strategy_UHC: 0/0.5/1 (No/Parcial/Sí)
+- Right_to_health: reconocimiento derecho a la salud
+- participation_event / leadership_event / decision_event: recuentos país-año
+- E_reg / E_dom / E_part: subíndices en 0-1
+- IECGGS_raw: índice base (0-1)
+- art7_excluded: 0/1 (exclusión Art.7)
+- IECGGS_adj_lambda_{x}: índice penalizado con λ=x
