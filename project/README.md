@@ -30,6 +30,8 @@ Salidas (en /workspace/project/outputs)
 
 Ejecución
 - ./entrypoint.sh ejecuta el pipeline end-to-end y deja las salidas en outputs/.
+- Entornos sin red/proxy: el entrypoint evita depender de `pip` online por defecto; intenta instalar sólo desde wheelhouse local (`LOCAL_WHEELHOUSE`, por defecto `/workspace/wheels`).
+- Fallback online opcional: definir `ALLOW_ONLINE_INSTALL=1` para habilitar `pip install` contra internet/proxy cuando esté disponible.
 
 Notas metodológicas clave
 - No se usa World Power Index, GHS u otros índices como inputs. Pueden usarse luego para validación/contraste.
