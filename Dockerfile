@@ -1,11 +1,8 @@
 FROM python:3.11-slim AS base
 
-# Copiar wheelhouse y requerimientos
-COPY wheels/ /wheelhouse/
-COPY requirements_lock.txt /tmp/requirements_lock.txt
-
-# Instalar dependencias sin conexión
-RUN pip install --no-index --find-links=/wheelhouse -r /tmp/requirements_lock.txt
+# Instalar dependencias
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # Copiar el código fuente
 COPY . /app
@@ -13,4 +10,8 @@ WORKDIR /app
 
 # Establecer permisos de ejecución y punto de entrada
 RUN chmod +x project/entrypoint.sh
+
+# Environment variables
+ENV PORT=8501
+
 ENTRYPOINT ["bash", "project/entrypoint.sh"]
