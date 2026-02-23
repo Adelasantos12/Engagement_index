@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import Dict, Tuple
 
 import pandas as pd
@@ -6,7 +7,7 @@ import numpy as np
 
 from utils import standardize_country_column, coerce_year_column, long_from_wide_indicator
 
-FILES_DIR = "/workspace/files"
+FILES_DIR = Path(__file__).resolve().parents[2] / "files"
 
 
 def read_spar() -> pd.DataFrame:

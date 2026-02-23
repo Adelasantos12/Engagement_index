@@ -4,7 +4,7 @@ set -euo pipefail
 export PYTHONUNBUFFERED=1
 
 # Paths
-PROJECT_DIR="/workspace/project"
+PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTDIR="$PROJECT_DIR/outputs"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 LOCAL_WHEELHOUSE="${LOCAL_WHEELHOUSE:-/workspace/wheels}"
@@ -53,7 +53,7 @@ if ! check_deps >/tmp/iecg_deps_check.log 2>&1; then
 fi
 
 # Run pipeline
-"$PYTHON_BIN" /workspace/project/src/main.py
+"$PYTHON_BIN" "$PROJECT_DIR/src/main.py"
 
 echo "Outputs written to $OUTDIR:"
 ls -l "$OUTDIR"

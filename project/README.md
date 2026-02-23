@@ -11,7 +11,7 @@ Arquitectura (módulos)
 - M3 Agregación (subíndices y índice global)
 - M4 Penalización y sensibilidad (Art.7; λ∈{0.1,0.25,0.5})
 
-Datos de entrada esperados (en /workspace/files)
+Datos de entrada esperados (en `<repo>/files`)
 - SPAR (A_e-SPAR.xlsx) u hoja con columnas como "ISO Code" y "Promedio total"
 - CHE%PIB (B_health_expenditure_GDP.csv) con indicador "Current health expenditure ..."
 - UHC Service Coverage Index (B_UHCIndex.csv) con indicador que contenga "UHC" e "index"
@@ -20,7 +20,7 @@ Datos de entrada esperados (en /workspace/files)
 - Exclusiones Art.7 (C_Exclusiones.xlsx) con columnas Año y País
 - Participación WHA (C_Particip.xlsx) con columnas WHA/Año/Actividad/País
 
-Salidas (en /workspace/project/outputs)
+Salidas (en `<repo>/project/outputs`)
 - panel_clean.csv (panel país–año con todas las variables limpias)
 - subindices.csv (E_reg, E_dom, E_part)
 - IECGGS_raw.csv
