@@ -44,7 +44,8 @@ def compute_subindices(panel: pd.DataFrame) -> pd.DataFrame:
 
     # Eligibility counters
     reg_components = ['SPAR_n']
-    dom_components = ['CHE_GDP_n', 'UHC_n', 'Policy_UHC', 'Plan_UHC', 'Right_n']
+    # Plan_UHC excluded due to extreme missingness; keep domestic pillar on robust components
+    dom_components = ['CHE_GDP_n', 'UHC_n', 'Policy_UHC', 'Right_n']
     part_components = ['participation_event_n', 'leadership_event_n', 'decision_event_n']
 
     df['n_reg_obs'] = df[reg_components].notna().sum(axis=1)

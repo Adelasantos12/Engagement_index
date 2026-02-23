@@ -10,9 +10,36 @@ from utils import standardize_country_column, coerce_year_column, long_from_wide
 FILES_DIR = Path(__file__).resolve().parents[2] / "files"
 
 
+FILE_CANDIDATES = {
+    'spar': ['A_e-SPAR.xlsx', '6d1cd8c3c3b54015a3ebf7d77b7e8941.xlsx'],
+    'che_gdp': ['B_health_expenditure_GDP.csv', '4b09fbba02e247b7a1497204a0c24cf3.csv'],
+    'uhc': ['B_UHCIndex.csv', '00cf6dbc70fd4017a7987b365d4abba2.csv'],
+    'policy': ['B_national_health_policy.csv', '8e043d9282aa4e9eb2a6d3cde6f6884e.csv'],
+    'plan': ['B_national_health_plan.csv', 'c4da32f6d88f4fc9a1556831f24b3b1c.csv'],
+    'strategy': ['B_national_health_strategy.csv', 'fc9853b355d642cbbf5ed3f52acafd5d.csv'],
+    'right_to_health': ['B_recognition.csv', '5709f9c0c9924954a8265dee0251b1c1.csv'],
+    'exclusions': ['C_Exclusiones.xlsx', '620a7cada3584b62b348fa698de4f28e.xlsx'],
+    'participation': ['C_Particip.xlsx', '00e422b990fa433395247ed6b6578aae.xlsx'],
+}
+
+
+def resolve_input_path(key: str) -> Path:
+    env_key = f'IECGGS_FILE_{key.upper()}'
+    env_value = os.getenv(env_key)
+    if env_value:
+        candidate = FILES_DIR / env_value
+        if candidate.exists():
+            return candidate
+    for name in FILE_CANDIDATES[key]:
+        candidate = FILES_DIR / name
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f'No input file found for {key}. Tried: {FILE_CANDIDATES[key]} and env {env_key}')
+
+
 def read_spar() -> pd.DataFrame:
     # A_e-SPAR.xlsx like structure resides in 6d1cd8c3c3b54015a3ebf7d77b7e8941.xlsx
-    xls_path = os.path.join(FILES_DIR, "6d1cd8c3c3b54015a3ebf7d77b7e8941.xlsx")
+    xls_path = resolve_input_path('spar')
     df = pd.read_excel(xls_path)
     # Detect total score column
     total_col = None
@@ -38,7 +65,7 @@ def read_spar() -> pd.DataFrame:
 
 
 def read_che_gdp() -> pd.DataFrame:
-    csv_path = os.path.join(FILES_DIR, "4b09fbba02e247b7a1497204a0c24cf3.csv")
+    csv_path = resolve_input_path('che_gdp')
     df = pd.read_csv(csv_path)
     # filter indicator
     ind_mask = df['Indicator'].str.contains('Current health expenditure', case=False, na=False)
@@ -51,7 +78,7 @@ def read_che_gdp() -> pd.DataFrame:
 
 def read_uhc() -> pd.DataFrame:
     # UHC index is in 00cf6dbc70fd4017a7987b365d4abba2.csv (tidy format)
-    csv_path = os.path.join(FILES_DIR, "00cf6dbc70fd4017a7987b365d4abba2.csv")
+    csv_path = resolve_input_path('uhc')
     # Some rows may include non-UTF8 bytes; read with latin1 fallback
     df = pd.read_csv(csv_path, encoding='latin1')
     df = df[df['IND_PER_CODE'].str.contains('UHC_INDEX', na=False)].copy()
@@ -62,10 +89,10 @@ def read_uhc() -> pd.DataFrame:
 
 
 def read_policy_plan_strategy() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    policy_path = os.path.join(FILES_DIR, "8e043d9282aa4e9eb2a6d3cde6f6884e.csv")
+    policy_path = resolve_input_path('policy')
     # Plan file may not be available or may be embedded in another dataset; attempt to read if exists
-    plan_path = os.path.join(FILES_DIR, "c4da32f6d88f4fc9a1556831f24b3b1c.csv")
-    strategy_path = os.path.join(FILES_DIR, "fc9853b355d642cbbf5ed3f52acafd5d.csv")
+    plan_path = resolve_input_path('plan')
+    strategy_path = resolve_input_path('strategy')
 
     def read_discrete(fp: str, varname: str) -> pd.DataFrame:
         if not os.path.exists(fp):
@@ -88,7 +115,7 @@ def read_policy_plan_strategy() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFram
 
 def read_right_to_health() -> pd.DataFrame:
     # Recognition file path may be an Apple Numbers container; handle gracefully
-    csv_path = os.path.join(FILES_DIR, "5709f9c0c9924954a8265dee0251b1c1.csv")
+    csv_path = resolve_input_path('right_to_health')
     if not os.path.exists(csv_path):
         return pd.DataFrame(columns=['country','year','Right_to_health'])
     try:
@@ -112,7 +139,7 @@ def read_right_to_health() -> pd.DataFrame:
 
 def read_exclusions() -> pd.DataFrame:
     # C_Exclusiones.xlsx mapped to 620a7cada3584b62b348fa698de4f28e.xlsx
-    xls_path = os.path.join(FILES_DIR, "620a7cada3584b62b348fa698de4f28e.xlsx")
+    xls_path = resolve_input_path('exclusions')
     df = pd.read_excel(xls_path)
     df = df.rename(columns={'Año': 'year', 'País': 'country'})
     df['art7_excluded'] = 1
@@ -121,7 +148,7 @@ def read_exclusions() -> pd.DataFrame:
 
 def read_participation_raw() -> pd.DataFrame:
     # C_Particip.xlsx is likely 00e422b990fa433395247ed6b6578aae.xlsx
-    xls_path = os.path.join(FILES_DIR, "00e422b990fa433395247ed6b6578aae.xlsx")
+    xls_path = resolve_input_path('participation')
     df = pd.read_excel(xls_path)
     # Harmonize potential column names
     if 'País' in df.columns:

@@ -6,7 +6,8 @@ import pandas as pd
 
 PILLAR_VARIABLES = {
     'reg': ['SPAR_total'],
-    'dom': ['CHE_GDP', 'UHC_index', 'Policy_UHC', 'Plan_UHC', 'Right_to_health'],
+    # Plan_UHC intentionally excluded from domestic pillar coverage diagnostics
+    'dom': ['CHE_GDP', 'UHC_index', 'Policy_UHC', 'Right_to_health'],
     'part': ['participation_event', 'leadership_event', 'decision_event'],
     'sanction': ['art7_excluded'],
 }
