@@ -55,3 +55,15 @@ Notas metodológicas clave
 
 Licencia y orígenes
 - Código original de este proyecto. Los datos provienen de los archivos suministrados por el usuario.
+
+
+Mapeo de archivos de entrada
+- La ingesta se hace desde `<repo>/files`.
+- El pipeline ahora busca primero nombres lógicos (p.ej. `B_UHCIndex.csv`) y si no existen usa los nombres hash actuales.
+- También se puede forzar cada archivo con variables de entorno `IECGGS_FILE_*` (ej: `IECGGS_FILE_UHC=B_UHCIndex.csv`).
+- Por lo tanto, **renombrar a nombres legibles no rompe** el pipeline siempre que el archivo exista en `files/` y mantenga su estructura esperada.
+
+Calidad de país-año (evitar duplicados por encoding)
+- Antes del merge, cada fuente se normaliza (`country`, `year`) y se colapsa a una fila por país-año.
+- Se aplica limpieza de acentos/encoding (incluyendo caso `Afganist√°n` → `Afghanistan`) para evitar duplicados como `Afganist√°n` vs `Afghanistan`.
+- Esto reduce la duplicación en `IECGGS_raw.csv` y mejora la consistencia del índice final.
