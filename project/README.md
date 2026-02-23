@@ -27,6 +27,17 @@ Salidas (en /workspace/project/outputs)
 - IECGGS_penalized.csv (λ=0.1,0.25,0.5)
 - sensitivity.csv (grid de λ y esquemas de pesos)
 - data_dictionary.md
+- panel_with_flags.csv (panel con flags de elegibilidad por pilar e índice)
+- coverage_report_by_variable.csv / by_country / by_year / by_pillar
+- coverage_summary.md
+
+
+Reglas de elegibilidad (codificadas)
+- E_reg se calcula si `n_reg_obs >= 1`.
+- E_dom se calcula si `n_dom_obs >= 3`.
+- E_part se calcula si `n_part_obs >= 2`.
+- IECGGS_raw se calcula si `n_pillars_ok >= 3`.
+- Umbrales configurables por variables de entorno: `IECGGS_MIN_REG_OBS`, `IECGGS_MIN_DOM_OBS`, `IECGGS_MIN_PART_OBS`, `IECGGS_MIN_INDEX_PILLARS`.
 
 Ejecución
 - ./entrypoint.sh ejecuta el pipeline end-to-end y deja las salidas en outputs/.

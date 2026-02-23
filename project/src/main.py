@@ -2,13 +2,19 @@ import os
 import pandas as pd
 
 from module_build import build_panel
+from module_coverage import build_coverage_reports
 from module_index import compute_subindices, compute_index, apply_penalty, sensitivity_table
 
 OUTDIR = "/workspace/project/outputs"
 
+
 def run_pipeline():
     os.makedirs(OUTDIR, exist_ok=True)
     panel = build_panel()
+
+    # A) Coverage audit from pre-index panel
+    build_coverage_reports(panel, OUTDIR)
+
     sub = compute_subindices(panel)
     idx = compute_index(panel, sub)
     pen = apply_penalty(idx)
@@ -16,9 +22,23 @@ def run_pipeline():
 
     panel.to_csv(os.path.join(OUTDIR, 'panel_clean.csv'), index=False)
     sub.to_csv(os.path.join(OUTDIR, 'subindices.csv'), index=False)
-    idx[['country','year','IECGGS_raw']].to_csv(os.path.join(OUTDIR, 'IECGGS_raw.csv'), index=False)
+    idx[['country', 'year', 'IECGGS_raw']].to_csv(os.path.join(OUTDIR, 'IECGGS_raw.csv'), index=False)
     pen.to_csv(os.path.join(OUTDIR, 'IECGGS_penalized.csv'), index=False)
     sens.to_csv(os.path.join(OUTDIR, 'sensitivity.csv'), index=False)
+
+    # A) Eligibility flags output
+    panel_with_flags = panel.merge(
+        idx[
+            [
+                'country', 'year',
+                'n_reg_obs', 'n_dom_obs', 'n_part_obs', 'n_pillars_ok',
+                'flag_pillar_reg_ok', 'flag_pillar_dom_ok', 'flag_pillar_part_ok', 'flag_iecgss_ok',
+            ]
+        ],
+        on=['country', 'year'],
+        how='left',
+    )
+    panel_with_flags.to_csv(os.path.join(OUTDIR, 'panel_with_flags.csv'), index=False)
 
     # Data dictionary minimal
     with open(os.path.join(OUTDIR, 'data_dictionary.md'), 'w') as f:
@@ -33,6 +53,9 @@ def run_pipeline():
         f.write("- IECGGS_raw: índice base (0-1)\n")
         f.write("- art7_excluded: 0/1 (exclusión Art.7)\n")
         f.write("- IECGGS_adj_lambda_{x}: índice penalizado con λ=x\n")
+        f.write("- flag_pillar_*_ok: elegibilidad booleana por pilar\n")
+        f.write("- flag_iecgss_ok: elegibilidad booleana del índice global\n")
+
 
 if __name__ == '__main__':
     run_pipeline()
