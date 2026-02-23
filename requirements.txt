@@ -1,0 +1,5 @@
+pandas
+openpyxl
+country_converter
+unidecode
+streamlit
