@@ -13,6 +13,9 @@ def normalize_country_year(df: pd.DataFrame, value_cols: list[str], agg: str = '
     out = df.copy()
     out['country'] = out['country'].map(clean_country_name)
     out['country'] = out['country'].replace({'Afganist√°n': 'Afghanistan'})
+    out['country'] = out['country'].replace({'AfganistaÃÅn': 'Afghanistan'})
+    out['country'] = out['country'].replace({'AfganistaÃÅn': 'Afghanistan'})
+    out['country'] = out['country'].replace({'Afghanistan ': 'Afghanistan'})
     out['year'] = pd.to_numeric(out['year'], errors='coerce')
     out = out.dropna(subset=['country', 'year'])
 
