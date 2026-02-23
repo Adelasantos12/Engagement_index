@@ -2,7 +2,12 @@ from pathlib import Path
 
 from module_build import build_panel
 from module_coverage import build_coverage_reports
-from module_index import compute_subindices, compute_index, apply_penalty, sensitivity_table
+from module_index import (
+    compute_subindices,
+    compute_index,
+    apply_penalty,
+    sensitivity_table,
+)
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 OUTDIR = BASE_DIR / "outputs"
@@ -20,27 +25,36 @@ def run_pipeline():
     pen = apply_penalty(idx)
     sens = sensitivity_table(idx)
 
-    panel.to_csv(OUTDIR / 'panel_clean.csv', index=False)
-    sub.to_csv(OUTDIR / 'subindices.csv', index=False)
-    idx[['country', 'year', 'IECGGS_raw']].to_csv(OUTDIR / 'IECGGS_raw.csv', index=False)
-    pen.to_csv(OUTDIR / 'IECGGS_penalized.csv', index=False)
-    sens.to_csv(OUTDIR / 'sensitivity.csv', index=False)
+    # Outputs principales
+    panel.to_csv(OUTDIR / "panel_clean.csv", index=False)
+    sub.to_csv(OUTDIR / "subindices.csv", index=False)
+    idx[["country", "year", "IECGGS_raw"]].to_csv(OUTDIR / "IECGGS_raw.csv", index=False)
+    pen.to_csv(OUTDIR / "IECGGS_penalized.csv", index=False)
+    sens.to_csv(OUTDIR / "sensitivity.csv", index=False)
 
     # A) Eligibility flags output
     panel_with_flags = panel.merge(
         idx[
             [
-                'country', 'year',
-                'n_reg_obs', 'n_dom_obs', 'n_part_obs', 'n_pillars_ok',
-                'flag_pillar_reg_ok', 'flag_pillar_dom_ok', 'flag_pillar_part_ok', 'flag_iecgss_ok',
+                "country",
+                "year",
+                "n_reg_obs",
+                "n_dom_obs",
+                "n_part_obs",
+                "n_pillars_ok",
+                "flag_pillar_reg_ok",
+                "flag_pillar_dom_ok",
+                "flag_pillar_part_ok",
+                "flag_iecgss_ok",
             ]
         ],
-        on=['country', 'year'],
-        how='left',
+        on=["country", "year"],
+        how="left",
     )
-    panel_with_flags.to_csv(OUTDIR / 'panel_with_flags.csv', index=False)
+    panel_with_flags.to_csv(OUTDIR / "panel_with_flags.csv", index=False)
 
-    with (OUTDIR / 'data_dictionary.md').open('w', encoding='utf-8') as f:
+    # Data dictionary minimal
+    with (OUTDIR / "data_dictionary.md").open("w", encoding="utf-8") as f:
         f.write("Variables:\n")
         f.write("- SPAR_total: puntaje RSI (0-100)\n")
         f.write("- CHE_GDP: gasto corriente en salud / PIB\n")
@@ -56,5 +70,5 @@ def run_pipeline():
         f.write("- flag_iecgss_ok: elegibilidad booleana del índice global\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_pipeline()
