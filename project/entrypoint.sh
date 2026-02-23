@@ -57,3 +57,7 @@ fi
 
 echo "Outputs written to $OUTDIR:"
 ls -l "$OUTDIR"
+
+# Run Streamlit
+echo "Starting Streamlit app..."
+"$PYTHON_BIN" -m streamlit run "$PROJECT_DIR/src/app.py" --server.port="${PORT:-8501}" --server.address=0.0.0.0
