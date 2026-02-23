@@ -52,7 +52,7 @@ def build_panel() -> pd.DataFrame:
     rth = normalize_country_year(rth, ['Right_to_health'])
     excl = normalize_country_year(excl, ['art7_excluded'], agg='max')
     particip = normalize_country_year(particip, ['participation_event', 'leadership_event', 'decision_event'], agg='max')
-
+    wpi = normalize_country_year(wpi, ['WPI_score'])
     # SPAR reported dummy
     spar['SPAR_reported'] = (~spar['SPAR_total'].isna()).astype(int)
 
@@ -69,7 +69,8 @@ def build_panel() -> pd.DataFrame:
            strategy[['country','year','Strategy_UHC']],
            rth[['country','year','Right_to_health']],
            particip[['country','year','participation_event','leadership_event','decision_event']],
-           excl[['country','year','art7_excluded']]
+           excl[['country','year','art7_excluded']],
+           wpi[['country','year','WPI_score']]
            ]
 
     # Outer merge to keep all available years
